@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MarketX — Century of Markets</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08090d;--surface:#0f1117;--surface2:#151821;--surface3:#1a1e28;
+  --border:#1e2433;--border2:#252d3d;
+  --text:#e2e8f0;--text2:#8892a4;--text3:#4a5568;
+  --accent:#2563eb;--accent-lt:#3b82f6;--accent-dim:rgba(37,99,235,0.12);
+  --green:#059669;--green-lt:#10b981;--green-dim:rgba(5,150,105,0.12);
+  --red:#dc2626;--red-lt:#ef4444;--red-dim:rgba(220,38,38,0.12);
+  --amber:#d97706;--amber-lt:#f59e0b;--amber-dim:rgba(217,119,6,0.15);
+  --sepia:#c9a84c;--sepia-dim:rgba(201,168,76,0.12);
+  --font-d:'Syne',sans-serif;--font-b:'DM Sans',sans-serif;--font-m:'IBM Plex Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font-b);font-size:14px;line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+.page{display:none;min-height:100vh}.page.active{display:block}
+
+/* ─── SHARED NAV ─── */
+.nav{position:fixed;top:0;left:0;right:0;z-index:300;padding:0 40px;height:54px;display:flex;align-items:center;gap:24px;background:rgba(8,9,13,0.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:var(--font-d);font-size:17px;font-weight:800;color:var(--text);display:flex;align-items:center;gap:8px;cursor:pointer;letter-spacing:-0.3px}
+.logo-dot{width:8px;height:8px;border-radius:50%;background:var(--accent-lt)}
+.nav-links{display:flex;gap:2px}
+.nav-lnk{background:none;border:none;color:var(--text2);font-family:var(--font-b);font-size:13px;padding:6px 13px;cursor:pointer;border-radius:5px;transition:all .15s}
+.nav-lnk:hover{color:var(--text);background:var(--surface2)}
+.nav-cta{background:var(--accent);color:#fff;border:none;font-family:var(--font-b);font-size:13px;font-weight:500;padding:7px 18px;border-radius:5px;cursor:pointer;transition:all .2s;margin-left:auto}
+.nav-cta:hover{background:#1d4ed8;transform:translateY(-1px)}
+
+/* ─── LANDING ─── */
+.grid-bg{position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(37,99,235,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(37,99,235,.025) 1px,transparent 1px);background-size:64px 64px}
+
+.hero{position:relative;z-index:1;padding:130px 40px 60px;max-width:1120px;margin:0 auto}
+.hero-eyebrow{font-family:var(--font-m);font-size:11px;color:var(--accent-lt);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.hero-eyebrow::before{content:'';width:32px;height:1px;background:var(--accent-lt)}
+.hero-h1{font-family:var(--font-d);font-size:clamp(42px,5.5vw,76px);font-weight:800;line-height:1.04;letter-spacing:-2.5px;margin-bottom:22px}
+.hero-h1 .blue{color:var(--accent-lt)}
+.hero-h1 .dim{color:var(--text3)}
+.hero-sub{font-size:17px;color:var(--text2);max-width:520px;line-height:1.75;margin-bottom:38px;font-weight:300}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:60px}
+.btn-pri{background:var(--accent);color:#fff;border:none;font-family:var(--font-b);font-size:14px;font-weight:500;padding:13px 28px;border-radius:6px;cursor:pointer;transition:all .2s}
+.btn-pri:hover{background:#1d4ed8;transform:translateY(-2px)}
+.btn-sec{background:transparent;color:var(--text);border:1px solid var(--border2);font-family:var(--font-b);font-size:14px;padding:13px 28px;border-radius:6px;cursor:pointer;transition:all .2s}
+.btn-sec:hover{border-color:var(--text3);background:var(--surface2)}
+
+/* Era cards on landing */
+.era-row{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;max-width:1120px;margin:0 auto;padding:0 40px 80px;position:relative;z-index:1}
+.era-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:28px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.era-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;opacity:0;transition:opacity .3s}
+.era-card.historic::after{background:linear-gradient(90deg,var(--sepia),var(--amber-lt));opacity:.6}
+.era-card.modern::after{background:linear-gradient(90deg,var(--accent),var(--green-lt));opacity:.6}
+.era-card:hover{transform:translateY(-3px);border-color:var(--border2)}
+.era-badge{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:4px;font-family:var(--font-m);font-size:10px;font-weight:500;letter-spacing:1px;margin-bottom:16px}
+.era-badge.hist{background:var(--sepia-dim);color:var(--sepia);border:1px solid rgba(201,168,76,.25)}
+.era-badge.mod{background:var(--accent-dim);color:var(--accent-lt);border:1px solid rgba(37,99,235,.25)}
+.era-title{font-family:var(--font-d);font-size:26px;font-weight:700;letter-spacing:-0.8px;margin-bottom:10px}
+.era-sub{font-size:13px;color:var(--text2);line-height:1.65;font-weight:300;margin-bottom:20px}
+.era-tags{display:flex;gap:8px;flex-wrap:wrap}
+.era-tag{font-size:11px;padding:4px 10px;border-radius:3px;background:var(--surface2);color:var(--text3);border:1px solid var(--border);font-family:var(--font-m)}
+.era-arrow{position:absolute;right:24px;top:50%;transform:translateY(-50%);font-size:22px;color:var(--text3);transition:all .2s}
+.era-card:hover .era-arrow{color:var(--text);transform:translateY(-50%) translateX(4px)}
+
+/* Timeline strip */
+.timeline-strip{position:relative;z-index:1;padding:60px 40px;max-width:1120px;margin:0 auto;border-top:1px solid var(--border)}
+.tl-label{font-family:var(--font-m);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:32px}
+.tl-track{position:relative;padding:20px 0}
+.tl-line{position:absolute;top:50%;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--border),var(--border2),var(--border))}
+.tl-events{display:flex;justify-content:space-between;position:relative;z-index:1}
+.tl-event{text-align:center;flex:1;cursor:default}
+.tl-dot{width:10px;height:10px;border-radius:50%;margin:0 auto 8px;border:2px solid}
+.tl-dot.crash{background:var(--red-dim);border-color:var(--red-lt)}
+.tl-dot.boom{background:var(--green-dim);border-color:var(--green-lt)}
+.tl-dot.reg{background:var(--amber-dim);border-color:var(--amber-lt)}
+.tl-year{font-family:var(--font-m);font-size:10px;color:var(--text3)}
+.tl-evt-name{font-size:10px;color:var(--text2);margin-top:4px;line-height:1.3}
+
+/* Features */
+.features{position:relative;z-index:1;padding:60px 40px;max-width:1120px;margin:0 auto;border-top:1px solid var(--border)}
+.sec-label{font-family:var(--font-m);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px}
+.sec-title{font-family:var(--font-d);font-size:34px;font-weight:700;letter-spacing:-1px;margin-bottom:40px;line-height:1.2}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.feat-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:22px;transition:border-color .2s}
+.feat-card:hover{border-color:var(--border2)}
+.feat-ico{font-size:22px;margin-bottom:14px}
+.feat-title{font-family:var(--font-d);font-size:15px;font-weight:600;margin-bottom:7px}
+.feat-desc{font-size:12px;color:var(--text2);line-height:1.65;font-weight:300}
+
+footer{border-top:1px solid var(--border);padding:24px 40px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1}
+.foot-logo{font-family:var(--font-d);font-size:14px;font-weight:700;color:var(--text3)}
+.foot-note{font-size:12px;color:var(--text3);font-weight:300}
+
+/* ─── SIMULATOR SHELL ─── */
+#page-sim{background:var(--bg)}
+.sim-topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 14px;height:46px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:200}
+.sim-logo-btn{font-family:var(--font-d);font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:6px;color:var(--text);border:none;background:none;flex-shrink:0}
+.sim-mode-badge{font-family:var(--font-m);font-size:10px;padding:3px 9px;border-radius:3px;font-weight:500}
+.sim-mode-badge.hist{background:var(--sepia-dim);color:var(--sepia)}
+.sim-mode-badge.mod{background:var(--accent-dim);color:var(--accent-lt)}
+.sim-nav{display:flex;gap:2px}
+.snb{background:none;border:none;color:var(--text2);font-family:var(--font-b);font-size:11px;font-weight:500;padding:5px 11px;cursor:pointer;border-radius:4px;transition:all .15s;text-transform:uppercase;letter-spacing:.4px}
+.snb:hover{color:var(--text);background:var(--surface2)}
+.snb.active{color:var(--accent-lt);background:var(--accent-dim)}
+.ticker-wrap{flex:1;overflow:hidden;font-family:var(--font-m);font-size:11px}
+.ticker-inner{display:flex;gap:18px;animation:tscrll 50s linear infinite;white-space:nowrap}
+@keyframes tscrll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.t-sym{color:var(--text);font-weight:500}
+.topbar-cash{font-family:var(--font-m);font-size:11px;color:var(--text2);flex-shrink:0}
+.topbar-cash span{color:var(--green-lt);font-weight:500}
+
+/* ─── SIM BODY ─── */
+.sim-body{display:flex;height:calc(100vh - 46px)}
+.sim-left{width:232px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column}
+.sim-center{flex:1;overflow-y:auto}
+.sim-right{width:268px;flex-shrink:0;background:var(--surface);border-left:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column}
+
+.pnl-hdr{padding:8px 13px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.pnl-ttl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3)}
+.pnl-badge{font-size:9px;background:var(--surface3);color:var(--text3);padding:2px 7px;border-radius:3px;font-family:var(--font-m)}
+
+/* Stock rows */
+.stk-row{padding:9px 13px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;display:flex;align-items:center;gap:9px}
+.stk-row:hover{background:var(--surface2)}
+.stk-row.sel{background:rgba(37,99,235,.08);border-left:2px solid var(--accent)}
+.stk-ico{width:26px;height:26px;border-radius:5px;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--font-m)}
+.stk-inf{flex:1;min-width:0}
+.stk-sym{font-size:12px;font-weight:500}
+.stk-exch{font-size:10px;color:var(--text3)}
+.stk-prc-col{text-align:right;flex-shrink:0}
+.stk-prc{font-family:var(--font-m);font-size:11px;font-weight:500}
+.stk-chg{font-family:var(--font-m);font-size:10px}
+.pos{color:var(--green-lt)}.neg{color:var(--red-lt)}.neu{color:var(--text2)}
+.sec-div{padding:5px 13px;background:var(--bg);border-bottom:1px solid var(--border);font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3)}
+
+/* Chart area */
+.chart-area{padding:14px}
+.sh-row{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.sh-sym{font-family:var(--font-d);font-size:22px;font-weight:700;letter-spacing:-.5px}
+.sh-name{font-size:12px;color:var(--text2);margin-top:2px}
+.sh-meta{font-size:11px;color:var(--text3);margin-top:3px}
+.price-big{font-family:var(--font-m);font-size:28px;font-weight:500;line-height:1}
+.price-chg{font-family:var(--font-m);font-size:12px;margin-top:4px}
+
+.chart-box{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:12px;margin-bottom:12px}
+.tf-btns{display:flex;gap:4px;margin-bottom:10px}
+.tf-btn{background:none;border:1px solid var(--border);color:var(--text3);font-size:10px;font-family:var(--font-m);padding:3px 8px;border-radius:3px;cursor:pointer;transition:all .15s}
+.tf-btn:hover{border-color:var(--border2);color:var(--text2)}
+.tf-btn.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent-lt)}
+.tf-btn.hist-active{background:var(--sepia-dim);border-color:var(--sepia);color:var(--sepia)}
+.chart-svg{width:100%;height:140px}
+
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:9px 11px}
+.stat-lbl{font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;font-weight:600;margin-bottom:3px}
+.stat-val{font-family:var(--font-m);font-size:13px;font-weight:500}
+
+/* Era context banner */
+.era-banner{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:12px 14px;margin-bottom:12px;border-left:3px solid var(--sepia)}
+.era-banner.mod{border-left-color:var(--accent-lt)}
+.era-banner-hdr{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.era-banner-title{font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--text2)}
+.era-context-text{font-size:12px;color:var(--text2);line-height:1.6;font-weight:300}
+
+/* Reg impact */
+.reg-impact{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:12px 14px;margin-bottom:12px}
+.ri-hdr{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.ri-title{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text2);flex:1}
+.ri-chip{font-size:9px;padding:2px 8px;border-radius:3px;font-family:var(--font-m);font-weight:600}
+.ri-chip.active{background:var(--amber-dim);color:var(--amber-lt)}
+.ri-chip.none{background:var(--surface2);color:var(--text3)}
+.ri-effects{display:flex;gap:7px;flex-wrap:wrap}
+.ri-pill{font-size:11px;padding:5px 10px;border-radius:4px;display:flex;align-items:center;gap:5px}
+.ri-pill.down{background:var(--red-dim);color:var(--red-lt);border:1px solid rgba(220,38,38,.2)}
+.ri-pill.up{background:var(--green-dim);color:var(--green-lt);border:1px solid rgba(5,150,105,.2)}
+
+/* Right panel — trade */
+.trade-tabs{display:flex;gap:4px;padding:9px 13px;border-bottom:1px solid var(--border)}
+.trade-tab{flex:1;padding:6px;border:1px solid var(--border);background:none;font-family:var(--font-b);font-size:12px;font-weight:500;cursor:pointer;border-radius:4px;transition:all .15s;color:var(--text2)}
+.trade-tab.buy.active{background:var(--green-dim);border-color:var(--green);color:var(--green-lt)}
+.trade-tab.sell.active{background:var(--red-dim);border-color:var(--red);color:var(--red-lt)}
+.trade-body{padding:11px 13px;border-bottom:1px solid var(--border)}
+.fld-lbl{font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;font-weight:700;margin-bottom:5px}
+.fld-grp{margin-bottom:9px}
+.qty-row{display:flex;gap:5px}
+.qty-inp{background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--font-m);font-size:13px;padding:7px 9px;border-radius:4px;flex:1;outline:none;transition:border .15s}
+.qty-inp:focus{border-color:var(--accent)}
+.qty-pre{background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-size:10px;font-family:var(--font-m);padding:4px 6px;border-radius:3px;cursor:pointer;transition:all .15s}
+.qty-pre:hover{border-color:var(--accent-lt);color:var(--accent-lt)}
+.trade-sum{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:9px;margin-bottom:9px}
+.sum-row{display:flex;justify-content:space-between;font-size:11px;color:var(--text2);padding:2px 0}
+.sum-row.total{color:var(--text);font-weight:500;border-top:1px solid var(--border);margin-top:4px;padding-top:5px}
+.exec-btn{width:100%;padding:9px;border:none;border-radius:5px;font-family:var(--font-b);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
+.exec-btn.buy{background:var(--green);color:#fff}
+.exec-btn.buy:hover{background:#047857}
+.exec-btn.sell{background:var(--red);color:#fff}
+.exec-btn.sell:hover{background:#b91c1c}
+.exec-btn:disabled{opacity:.35;cursor:not-allowed}
+
+.holding-row{padding:8px 13px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:7px}
+.h-sym{font-family:var(--font-m);font-size:11px;font-weight:500;min-width:36px}
+.h-inf{flex:1}.h-shares{font-size:10px;color:var(--text2)}.h-cost{font-size:10px;color:var(--text3)}
+.h-right{text-align:right}.h-val{font-family:var(--font-m);font-size:11px;font-weight:500}
+.h-pnl{font-family:var(--font-m);font-size:10px}
+.empty-state{padding:22px;text-align:center;color:var(--text3);font-size:12px}
+
+/* Regulations panel */
+.reg-panel{}
+.c-section{border-bottom:1px solid var(--border)}
+.c-hdr{padding:11px 13px;cursor:pointer;display:flex;align-items:center;gap:9px;transition:background .15s}
+.c-hdr:hover{background:var(--surface2)}
+.c-flag{font-size:16px}
+.c-name{font-size:12px;font-weight:500;flex:1}
+.c-act-count{font-family:var(--font-m);font-size:10px;color:var(--amber-lt)}
+.c-arr{font-size:11px;color:var(--text3);transition:transform .2s}
+.c-arr.open{transform:rotate(90deg)}
+.reg-list{padding:0 13px 10px;display:none}
+.reg-list.open{display:block}
+.reg-item{padding:9px 11px;background:var(--bg);border:1px solid var(--border);border-radius:6px;margin-top:7px}
+.reg-item-top{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.reg-name{font-size:11px;font-weight:500;flex:1}
+.reg-toggle{position:relative;width:34px;height:19px;flex-shrink:0}
+.reg-toggle input{opacity:0;width:0;height:0;position:absolute}
+.tog-track{position:absolute;inset:0;background:var(--border2);border-radius:10px;cursor:pointer;transition:background .2s}
+.tog-thumb{position:absolute;width:13px;height:13px;background:#fff;border-radius:50%;top:3px;left:3px;transition:transform .2s;pointer-events:none}
+.reg-toggle input:checked~.tog-track{background:var(--amber)}
+.reg-toggle input:checked~.tog-track~.tog-thumb{transform:translateX(15px)}
+.reg-desc{font-size:11px;color:var(--text2);line-height:1.55;margin-bottom:7px;font-weight:300}
+.reg-impacts{display:flex;flex-direction:column;gap:3px}
+.imp-row{display:flex;align-items:center;gap:5px;font-size:10px}
+.imp-sym{font-family:var(--font-m);font-weight:500;flex:1;color:var(--text2)}
+.imp-val{font-family:var(--font-m);font-size:10px;font-weight:500}
+.imp-val.down{color:var(--red-lt)}.imp-val.up{color:var(--green-lt)}
+
+/* Portfolio + Leaderboard views */
+.sim-view{display:none;height:calc(100vh - 46px);overflow-y:auto}
+.sim-view.active{display:block}
+
+.port-wrap{padding:18px;max-width:880px;margin:0 auto}
+.port-stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:16px}
+.psc{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:11px 13px}
+.psc-l{font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;font-weight:700;margin-bottom:4px}
+.psc-v{font-family:var(--font-m);font-size:15px;font-weight:500}
+.psc-s{font-family:var(--font-m);font-size:10px;margin-top:2px}
+.port-card{background:var(--surface);border:1px solid var(--border);border-radius:7px;overflow:hidden;margin-bottom:13px}
+.pc-hdr{padding:9px 13px;border-bottom:1px solid var(--border)}
+.pc-title{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text3)}
+.ptable{width:100%;border-collapse:collapse}
+.ptable th{padding:7px 13px;text-align:left;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border)}
+.ptable th:not(:first-child){text-align:right}
+.ptable td{padding:8px 13px;border-bottom:1px solid var(--border);font-size:11px}
+.ptable td:not(:first-child){text-align:right;font-family:var(--font-m)}
+.ptable tr:last-child td{border-bottom:none}
+
+.lb-wrap{padding:18px;max-width:580px;margin:0 auto}
+.lb-card{background:var(--surface);border:1px solid var(--border);border-radius:7px;overflow:hidden}
+.lb-row{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:11px}
+.lb-rank{font-family:var(--font-m);font-size:11px;min-width:20px}
+.lb-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:var(--font-m);flex-shrink:0}
+.lb-nw{flex:1}
+.lb-name{font-size:12px;font-weight:500}
+.lb-bar-w{height:3px;background:var(--border);border-radius:2px;margin-top:3px}
+.lb-bar-f{height:100%;border-radius:2px}
+.lb-amt{font-family:var(--font-m);font-size:12px;font-weight:500}
+.you-tag{font-size:9px;background:var(--accent-dim);color:var(--accent-lt);padding:1px 5px;border-radius:2px;font-weight:700;margin-left:4px;font-family:var(--font-m)}
+
+/* Trade view wrapper */
+#simview-trade{display:none;height:calc(100vh - 46px)}
+#simview-trade.active{display:block}
+
+.toast{position:fixed;bottom:18px;right:18px;background:var(--surface2);border:1px solid var(--border2);border-left:3px solid var(--green-lt);padding:10px 14px;border-radius:6px;font-size:12px;z-index:9999;opacity:0;transform:translateY(8px);transition:all .3s;pointer-events:none;max-width:290px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.err{border-left-color:var(--red-lt)}
+.toast.warn{border-left-color:var(--amber-lt)}
+.toast-t{font-weight:600;font-size:12px;margin-bottom:2px}
+.toast-m{color:var(--text2);font-size:11px}
+
+/* Sepia theme for historic sim */
+.historic-theme .sim-topbar{border-bottom-color:#2a2416}
+.historic-theme .sim-left,.historic-theme .sim-right{background:#0e0d0a;border-color:#2a2416}
+.historic-theme .stk-row{border-bottom-color:#1e1a12}
+.historic-theme .sec-div{background:#08070504;border-bottom-color:#1e1a12;color:#6b5d3f}
+.historic-theme .chart-box,.historic-theme .stat-card,.historic-theme .era-banner,.historic-theme .reg-impact,.historic-theme .trade-sum,.historic-theme .holding-row,.historic-theme .reg-item{border-color:#2a2416}
+.historic-theme .pnl-hdr{border-bottom-color:#2a2416}
+.historic-theme .c-section{border-bottom-color:#1e1a12}
+</style>
+</head>
+<body>
+
+<!-- ══════════ LANDING ══════════ -->
+<div id="page-landing" class="page active">
+<div class="grid-bg"></div>
+<nav class="nav">
+  <div class="nav-logo" onclick=""><span class="logo-dot"></span>MarketX</div>
+  <div class="nav-links">
+    <button class="nav-lnk" onclick="document.querySelector('.era-row').scrollIntoView({behavior:'smooth'})">Simulators</button>
+    <button class="nav-lnk" onclick="document.querySelector('.timeline-strip').scrollIntoView({behavior:'smooth'})">Timeline</button>
+    <button class="nav-lnk" onclick="document.querySelector('.features').scrollIntoView({behavior:'smooth'})">Features</button>
+  </div>
+  <button class="nav-cta" onclick="launchSim('modern')">Launch Simulator →</button>
+</nav>
+
+<section class="hero">
+  <div class="hero-eyebrow">A Century of Global Markets</div>
+  <h1 class="hero-h1">Trade History.<br><span class="blue">From 1920</span><br><span class="dim">to 2019.</span></h1>
+  <p class="hero-sub">Two full market simulators spanning 100 years of global finance. Trade historic industry indices through the Great Depression and Oil Crisis, or manage modern stocks through the dot-com bubble and 2008 crash — with real regulatory events shaping every price.</p>
+  <div class="hero-btns">
+    <button class="btn-pri" onclick="launchSim('historic')">Historic Markets 1920–1979</button>
+    <button class="btn-sec" onclick="launchSim('modern')">Modern Markets 1980–2019</button>
+  </div>
+</section>
+
+<!-- Era cards -->
+<div class="era-row">
+  <div class="era-card historic" onclick="launchSim('historic')">
+    <div class="era-badge hist">⊛ HISTORIC ERA</div>
+    <div class="era-title">1920 – 1979</div>
+    <p class="era-sub">Trade industry indices through the Roaring Twenties, the Great Depression, World War II reconstruction, the post-war boom, and the stagflation of the 1970s Oil Crisis.</p>
+    <div class="era-tags">
+      <span class="era-tag">Steel Index</span>
+      <span class="era-tag">Oil & Gas Index</span>
+      <span class="era-tag">Railway Index</span>
+      <span class="era-tag">Banking Index</span>
+      <span class="era-tag">Defence Index</span>
+      <span class="era-tag">+5 more</span>
+    </div>
+    <div class="era-arrow">→</div>
+  </div>
+  <div class="era-card modern" onclick="launchSim('modern')">
+    <div class="era-badge mod">◈ MODERN ERA</div>
+    <div class="era-title">1980 – 2019</div>
+    <p class="era-sub">Trade real global companies through Reagan's bull market, Black Monday 1987, the dot-com bubble, the 2008 financial crisis, and the decade-long recovery to 2019.</p>
+    <div class="era-tags">
+      <span class="era-tag">AAPL</span>
+      <span class="era-tag">MSFT</span>
+      <span class="era-tag">GOOG</span>
+      <span class="era-tag">AMZN</span>
+      <span class="era-tag">BABA</span>
+      <span class="era-tag">+5 more</span>
+    </div>
+    <div class="era-arrow">→</div>
+  </div>
+</div>
+
+<!-- Timeline -->
+<div class="timeline-strip">
+  <div class="tl-label">Key Market Events 1920–2019</div>
+  <div class="tl-track">
+    <div class="tl-line"></div>
+    <div class="tl-events" id="tlEvents"></div>
+  </div>
+</div>
+
+<!-- Features -->
+<div class="features">
+  <div class="sec-label">Platform Features</div>
+  <h2 class="sec-title">Built for education.<br>Powered by real history.</h2>
+  <div class="feat-grid">
+    <div class="feat-card"><div class="feat-ico">📜</div><div class="feat-title">100 Years of Data</div><div class="feat-desc">Two simulators spanning 1920–2019. Historic industry indices for pre-1980 and real company stocks for modern markets, all modeled on historical volatility and trend data.</div></div>
+    <div class="feat-card"><div class="feat-ico">🌐</div><div class="feat-title">Regulation Toggle Engine</div><div class="feat-desc">Toggle real-world regulations from 6 countries and watch prices react globally. From the Glass-Steagall Act to GDPR — every policy has cross-border consequences.</div></div>
+    <div class="feat-card"><div class="feat-ico">📉</div><div class="feat-title">Era Context Panels</div><div class="feat-desc">Every stock and index comes with a contextual banner explaining the economic environment of that era — what was happening, why prices moved, and what it meant globally.</div></div>
+    <div class="feat-card"><div class="feat-ico">💼</div><div class="feat-title">Full Portfolio Tracking</div><div class="feat-desc">Track P&L, view your positions, review transaction history, and see your portfolio value plotted over time with a live performance chart.</div></div>
+    <div class="feat-card"><div class="feat-ico">🏆</div><div class="feat-title">Dual Leaderboards</div><div class="feat-desc">Compete on separate leaderboards for each era. Can you beat the simulated traders who navigated the Great Depression or the 2008 crash?</div></div>
+    <div class="feat-card"><div class="feat-ico">⚡</div><div class="feat-title">Live Ticker Feed</div><div class="feat-desc">A scrolling ticker at the top of each simulator shows all instruments with live prices and daily changes — just like a real trading terminal.</div></div>
+  </div>
+</div>
+
+<footer>
+  <div class="foot-logo">MarketX</div>
+  <div class="foot-note">IB Personal Project · Global Stock Market Simulator · Historical data 1920–2019</div>
+</footer>
+</div>
+
+<!-- ══════════ SIMULATOR PAGE ══════════ -->
+<div id="page-sim" class="page">
+<div class="sim-topbar">
+  <button class="sim-logo-btn" onclick="goLanding()"><span class="logo-dot"></span>MarketX</button>
+  <span class="sim-mode-badge hist" id="simModeBadge">HISTORIC 1920–1979</span>
+  <div class="sim-nav">
+    <button class="snb active" onclick="setSimTab('trade',this)">Trade</button>
+    <button class="snb" onclick="setSimTab('portfolio',this)">Portfolio</button>
+    <button class="snb" onclick="setSimTab('leaderboard',this)">Leaderboard</button>
+  </div>
+  <div class="ticker-wrap"><div class="ticker-inner" id="tickerInner"></div></div>
+  <div class="topbar-cash">CASH: <span id="cashDisp">$100,000.00</span></div>
+</div>
+
+<!-- TRADE VIEW -->
+<div id="simview-trade" class="sim-view active">
+  <div class="sim-body">
+    <div class="sim-left">
+      <div class="pnl-hdr"><span class="pnl-ttl">Markets</span><span class="pnl-badge" id="eraRangeBadge"></span></div>
+      <div id="stockListEl"></div>
+    </div>
+    <div class="sim-center">
+      <div class="chart-area">
+        <div class="sh-row">
+          <div><div class="sh-sym" id="cSym">—</div><div class="sh-name" id="cName"></div><div class="sh-meta" id="cMeta"></div></div>
+          <div style="text-align:right"><div class="price-big" id="cPrice">$—</div><div class="price-chg" id="cChg"></div></div>
+        </div>
+        <div class="chart-box">
+          <div class="tf-btns" id="tfBtns"></div>
+          <svg class="chart-svg" id="priceChart" viewBox="0 0 600 140" preserveAspectRatio="none"></svg>
+        </div>
+        <div class="stats-grid" id="statsGrid"></div>
+        <div class="era-banner" id="eraBanner"><div class="era-banner-hdr"><div class="era-banner-title" id="eraBannerTitle"></div></div><div class="era-context-text" id="eraBannerText"></div></div>
+        <div class="reg-impact"><div class="ri-hdr"><div class="ri-title">Active Regulation Impact</div><span class="ri-chip none" id="riChip">No active regulations</span></div><div class="ri-effects" id="riEffects"><span style="font-size:12px;color:var(--text3)">Toggle regulations in the right panel to see effects.</span></div></div>
+      </div>
+    </div>
+    <div class="sim-right">
+      <div class="pnl-hdr"><span class="pnl-ttl">Order Entry</span></div>
+      <div class="trade-tabs">
+        <button class="trade-tab buy active" onclick="setTradeMode('buy',this)">BUY</button>
+        <button class="trade-tab sell" onclick="setTradeMode('sell',this)">SELL</button>
+      </div>
+      <div class="trade-body">
+        <div class="fld-grp">
+          <div class="fld-lbl">Quantity</div>
+          <div class="qty-row">
+            <input class="qty-inp" type="number" id="qtyInp" value="10" min="1" oninput="updateSum()">
+            <button class="qty-pre" onclick="setQty(10)">10</button>
+            <button class="qty-pre" onclick="setQty(50)">50</button>
+            <button class="qty-pre" onclick="setQty(100)">100</button>
+          </div>
+        </div>
+        <div class="trade-sum" id="tradeSummary"></div>
+        <button class="exec-btn buy" id="execBtn" onclick="executeTrade()">EXECUTE BUY</button>
+      </div>
+      <div class="pnl-hdr"><span class="pnl-ttl">Holdings</span></div>
+      <div id="holdingsList"></div>
+      <div class="pnl-hdr" style="margin-top:auto"><span class="pnl-ttl">Regulations</span><span class="pnl-badge" id="activeRegCount">0 active</span></div>
+      <div id="regPanel"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PORTFOLIO VIEW -->
+<div id="simview-portfolio" class="sim-view">
+  <div class="port-wrap">
+    <div class="port-stats-row" id="portStatsRow"></div>
+    <div class="port-card"><div class="pc-hdr"><span class="pc-title">Portfolio Performance</span></div><div style="padding:13px;position:relative;height:180px"><canvas id="portChart" role="img" aria-label="Portfolio value over time"></canvas></div></div>
+    <div class="port-card"><div class="pc-hdr"><span class="pc-title">Open Positions</span></div><div id="posTable"></div></div>
+    <div class="port-card"><div class="pc-hdr"><span class="pc-title">Transaction History</span></div><div id="txTable"></div></div>
+  </div>
+</div>
+
+<!-- LEADERBOARD VIEW -->
+<div id="simview-leaderboard" class="sim-view">
+  <div class="lb-wrap">
+    <div style="font-family:var(--font-d);font-size:20px;font-weight:700;letter-spacing:-.5px;margin-bottom:14px" id="lbTitle">Leaderboard</div>
+    <div class="lb-card" id="lbList"></div>
+  </div>
+</div>
+</div>
+
+<div class="toast" id="toast"><div class="toast-t" id="toastT"></div><div class="toast-m" id="toastM"></div></div>
+
+<script>
+// ═══════════════════════════════════════════════════
+//  ALL DATA
+// ═══════════════════════════════════════════════════
+
+const HISTORIC_STOCKS = [
+  {sym:'STEEL', name:'US Steel Index',        era:'Industrial',  col:'#f59e0b',bg:'#78350f', base:82,  vol:0.022, context:{title:'Steel & Heavy Industry', text:'Steel was the backbone of American industrial power. Post-WWI demand surged through the Roaring Twenties before collapsing 90% in the Great Depression, then rebounding massively with WWII production contracts.'}},
+  {sym:'OIL',   name:'Oil & Gas Index',       era:'Energy',      col:'#ef4444',bg:'#7f1d1d', base:45,  vol:0.024, context:{title:'Oil Markets 1920–1979', text:'From the Texas oil boom to the 1973 OPEC embargo, oil transformed from abundant commodity to geopolitical weapon. The 1973 crisis quadrupled prices overnight and triggered global stagflation.'}},
+  {sym:'RAIL',  name:'Railway Index',         era:'Transport',   col:'#8b5cf6',bg:'#4c1d95', base:120, vol:0.015, context:{title:'Railways: America\'s Arteries', text:'Railways dominated pre-interstate America. Heavily regulated by the Interstate Commerce Commission, they were critical for wartime logistics but faced decline as automobiles rose post-WWII.'}},
+  {sym:'BANK',  name:'Banking Index',         era:'Finance',     col:'#3b82f6',bg:'#1e3a5f', base:95,  vol:0.028, context:{title:'Banking 1920–1979', text:'The 1929 crash wiped out 9,000 US banks. The Glass-Steagall Act (1933) separated commercial and investment banking for 66 years. Post-WWII banking grew steadily under tight Federal Reserve oversight.'}},
+  {sym:'AUTO',  name:'Automobile Index',      era:'Consumer',    col:'#10b981',bg:'#064e3b', base:60,  vol:0.020, context:{title:'Rise of the Automobile', text:'Ford\'s Model T democratized car ownership in the 1920s. The auto industry became America\'s largest by WWII. Post-war suburbanization drove explosive growth until the 1973 oil crisis crushed demand.'}},
+  {sym:'DEF',   name:'Defence Index',         era:'Industrials', col:'#ec4899',bg:'#831843', base:40,  vol:0.018, context:{title:'Defence Industry', text:'Near-zero in the 1920s, the defence sector exploded with WWII mobilization — becoming the largest government contract recipient. Cold War spending kept it elevated through the entire 1950s–1970s period.'}},
+  {sym:'AGRI',  name:'Agriculture Index',     era:'Commodities', col:'#84cc16',bg:'#365314', base:55,  vol:0.016, context:{title:'Agriculture & Commodities', text:'The Dust Bowl (1930–36) devastated Midwestern farming. New Deal programs stabilized prices. Post-WWII mechanization transformed output. Nixon\'s 1971 dollar shock reshaped global commodity pricing.'}},
+  {sym:'UTIL',  name:'Utilities Index',       era:'Utilities',   col:'#06b6d4',bg:'#0e7490', base:70,  vol:0.012, context:{title:'Utilities: Power & Water', text:'Rural electrification under FDR\'s New Deal (1935) transformed America. Utilities were tightly regulated monopolies — stable, dividend-paying, and critical to industrial and residential growth.'}},
+  {sym:'CHEM',  name:'Chemicals Index',       era:'Industry',    col:'#a78bfa',bg:'#4c1d95', base:50,  vol:0.019, context:{title:'Chemical Industry', text:'From fertilisers to plastics to synthetic fibres, the chemical industry underpinned post-WWII consumer society. DuPont, Dow, and BASF built global empires on peacetime versions of wartime innovations.'}},
+  {sym:'MEDIA', name:'Media & Print Index',   era:'Consumer',    col:'#f97316',bg:'#7c2d12', base:30,  vol:0.021, context:{title:'Media: Press, Radio & TV', text:'Radio advertising exploded in the 1920s. Print dominated through the 1940s. Television emerged in the 1950s to reshape American culture and advertising — a pattern now echoed by the internet.'}},
+];
+
+const MODERN_STOCKS = [
+  {sym:'AAPL', name:'Apple Inc.',          exch:'NASDAQ',sector:'Technology', col:'#3b82f6',bg:'#1e3a5f', base:0.45, vol:0.022, context:{title:'Apple 1980–2019', text:'From near-bankruptcy in 1997 to the world\'s most valuable company by 2018. The iPod (2001), iPhone (2007), and App Store (2008) each triggered step-changes in valuation. Subject to antitrust scrutiny globally.'}},
+  {sym:'MSFT', name:'Microsoft Corp.',     exch:'NASDAQ',sector:'Technology', col:'#10b981',bg:'#064e3b', base:0.08, vol:0.020, context:{title:'Microsoft 1986–2019', text:'Went public in 1986 at $21. Dominated PC software through the 1990s but faced DOJ antitrust action in 1998. Near-irrelevance under Ballmer gave way to a cloud renaissance under Nadella.'}},
+  {sym:'GOOG', name:'Alphabet Inc.',       exch:'NASDAQ',sector:'Technology', col:'#f59e0b',bg:'#78350f', base:85,  vol:0.018, context:{title:'Google/Alphabet 2004–2019', text:'IPO in 2004 at $85. Search monopoly fuelled advertising dominance. EU fined Google €2.42bn (2017) for shopping search abuse — the largest antitrust fine in history at the time.'}},
+  {sym:'AMZN', name:'Amazon.com Inc.',     exch:'NASDAQ',sector:'Consumer',   col:'#f97316',bg:'#7c2d12', base:1.8,  vol:0.026, context:{title:'Amazon 1997–2019', text:'IPO in 1997 at $1.73. Lost 90% of its value in the dot-com crash. AWS (2006) transformed it from a retailer to a cloud giant. Prime membership created a recurring revenue flywheel.'}},
+  {sym:'JPM',  name:'JPMorgan Chase',      exch:'NYSE',  sector:'Financials', col:'#8b5cf6',bg:'#4c1d95', base:5.2,  vol:0.018, context:{title:'JPMorgan 1980–2019', text:'Emerged from multiple mergers (Chemical, Chase, BankOne). Survived the 2008 crisis better than peers due to conservative risk management, then bought Bear Stearns and WaMu at distressed prices.'}},
+  {sym:'GS',   name:'Goldman Sachs',       exch:'NYSE',  sector:'Financials', col:'#06b6d4',bg:'#0e7490', base:48,  vol:0.022, context:{title:'Goldman Sachs 1999–2019', text:'IPO in 1999. Dominated investment banking through the 2000s. Converted to a bank holding company during the 2008 crisis to access Fed emergency lending. Subject to ongoing regulatory scrutiny.'}},
+  {sym:'XOM',  name:'ExxonMobil Corp.',    exch:'NYSE',  sector:'Energy',     col:'#ef4444',bg:'#7f1d1d', base:2.8,  vol:0.016, context:{title:'ExxonMobil 1980–2019', text:'Formed by the merger of Exxon and Mobil in 1999. Largest US company by market cap for much of the 2000s. Exxon Valdez spill (1989) and climate regulation pressure shaped its long-term trajectory.'}},
+  {sym:'BABA', name:'Alibaba Group',        exch:'NYSE',  sector:'Technology', col:'#ec4899',bg:'#831843', base:68,  vol:0.028, context:{title:'Alibaba 2014–2019', text:'Largest IPO in history at $25bn in 2014. Dominated Chinese e-commerce and cloud. Subject to intense Chinese regulatory scrutiny from 2020, but in this 1980–2019 window, it was in hypergrowth.'}},
+  {sym:'TM',   name:'Toyota Motor Corp.',  exch:'NYSE',  sector:'Industrials',col:'#84cc16',bg:'#365314', base:8.5,  vol:0.014, context:{title:'Toyota 1980–2019', text:'Pioneer of the just-in-time manufacturing model. Became world\'s largest automaker in 2008. The 2009 recalls crisis cost it $2bn and its quality reputation, but it recovered strongly by 2012.'}},
+  {sym:'RDSA', name:'Shell PLC',           exch:'LSE',   sector:'Energy',     col:'#a78bfa',bg:'#4c1d95', base:6.1,  vol:0.015, context:{title:'Shell 1980–2019', text:'Anglo-Dutch oil giant navigating energy transitions. Benefited from North Sea production in the 1980s. EU carbon regulation and the Paris Agreement (2015) fundamentally challenged its long-term business model.'}},
+];
+
+// Historic era regulation events
+const HIST_REGS = {
+  us_hist:{name:'United States',flag:'🇺🇸',regs:[
+    {id:'h_us1',name:'Glass-Steagall Act (1933)',active:false,desc:'Separated commercial and investment banking after the 1929 banking collapse. Imposed strict limits on banks\' securities activities.',impacts:{BANK:{dir:'down',pct:-8.2},STEEL:{dir:'down',pct:-1.4},OIL:{dir:'down',pct:-1.1}}},
+    {id:'h_us2',name:'New Deal – SEC Created (1934)',active:false,desc:'Securities and Exchange Commission established. Mandatory disclosure rules for listed securities. Restored investor confidence after 1929 fraud scandals.',impacts:{BANK:{dir:'up',pct:4.1},RAIL:{dir:'up',pct:2.2},UTIL:{dir:'up',pct:3.1}}},
+    {id:'h_us3',name:'Rural Electrification Act (1936)',active:false,desc:'Federal program to bring electricity to rural America. Massive public works spend drove demand for utilities, steel, and construction.',impacts:{UTIL:{dir:'up',pct:9.4},STEEL:{dir:'up',pct:5.2},CHEM:{dir:'up',pct:2.1}}},
+    {id:'h_us4',name:'Nixon Ends Gold Standard (1971)',active:false,desc:'Nixon closes the gold window, ending the Bretton Woods system. Dollar devaluation boosted commodity prices but created inflation uncertainty.',impacts:{OIL:{dir:'up',pct:12.3},AGRI:{dir:'up',pct:8.4},BANK:{dir:'down',pct:-4.2},CHEM:{dir:'up',pct:3.1}}},
+    {id:'h_us5',name:'OPEC Oil Embargo (1973)',active:false,desc:'Arab OPEC nations embargo oil exports to US and allies. Oil prices quadrupled in months, triggering the worst recession since the 1930s.',impacts:{OIL:{dir:'up',pct:28.4},AUTO:{dir:'down',pct:-22.1},CHEM:{dir:'down',pct:-8.3},RAIL:{dir:'up',pct:6.2},DEF:{dir:'up',pct:3.1}}},
+  ]},
+  uk_hist:{name:'United Kingdom',flag:'🇬🇧',regs:[
+    {id:'h_uk1',name:'Nationalisation Wave (1945–51)',active:false,desc:'Post-WWII Labour government nationalised coal, steel, railways, and utilities. Private shareholders received compensation bonds.',impacts:{STEEL:{dir:'down',pct:-15.4},RAIL:{dir:'down',pct:-12.1},UTIL:{dir:'down',pct:-10.2},BANK:{dir:'down',pct:-3.1}}},
+    {id:'h_uk2',name:'Bretton Woods Membership (1944)',active:false,desc:'UK joins the Bretton Woods fixed exchange rate system, pegging the pound to gold via the dollar. Stabilised international trade.',impacts:{BANK:{dir:'up',pct:5.2},OIL:{dir:'up',pct:2.1},AGRI:{dir:'up',pct:1.8}}},
+  ]},
+  de_hist:{name:'Germany',flag:'🇩🇪',regs:[
+    {id:'h_de1',name:'Marshall Plan Aid (1948)',active:false,desc:'US provides $13bn to rebuild Western European economies. Germany receives the largest share, triggering the Wirtschaftswunder (economic miracle).',impacts:{STEEL:{dir:'up',pct:18.2},CHEM:{dir:'up',pct:14.4},BANK:{dir:'up',pct:7.1},AUTO:{dir:'up',pct:11.3}}},
+    {id:'h_de2',name:'West Germany Rearmament (1955)',active:false,desc:'West Germany joins NATO and begins rearming. Bundeswehr established. Massive stimulus for steel, chemicals, and defence industries.',impacts:{DEF:{dir:'up',pct:22.1},STEEL:{dir:'up',pct:9.4},CHEM:{dir:'up',pct:6.2}}},
+  ]},
+  su_hist:{name:'Soviet Union',flag:'🇷🇺',regs:[
+    {id:'h_su1',name:'Sputnik Launch & Space Race (1957)',active:false,desc:'Soviet satellite launch triggers US defence spending surge. Space-industrial complex becomes dominant government contractor.',impacts:{DEF:{dir:'up',pct:15.4},CHEM:{dir:'up',pct:4.1},STEEL:{dir:'up',pct:3.2},MEDIA:{dir:'up',pct:8.1}}},
+    {id:'h_su2',name:'Cold War Military Buildup (1950s)',active:false,desc:'Sustained US–Soviet arms race drives permanent high defence spending. Military-industrial complex entrenches across American economy.',impacts:{DEF:{dir:'up',pct:18.3},STEEL:{dir:'up',pct:7.2},CHEM:{dir:'up',pct:5.1}}},
+  ]},
+};
+
+// Modern era regulation events
+const MOD_REGS = {
+  us:{name:'United States',flag:'🇺🇸',regs:[
+    {id:'m_us1',name:'Reagan Deregulation (1981)',active:false,desc:'Reagan slashes financial and energy regulation. Begins the 40-year trend of financial deregulation. Unleashes the 1980s bull market.',impacts:{BANK:{dir:'up',pct:0},GS:{dir:'up',pct:8.4},JPM:{dir:'up',pct:7.2},XOM:{dir:'up',pct:6.1},AMZN:{dir:'up',pct:0}}},
+    {id:'m_us2',name:'Gramm-Leach-Bliley Act (1999)',active:false,desc:'Repeals Glass-Steagall. Allows commercial banks to merge with investment banks. Directly enables the leverage build-up preceding 2008.',impacts:{JPM:{dir:'up',pct:6.2},GS:{dir:'up',pct:7.8},AMZN:{dir:'up',pct:1.4},AAPL:{dir:'up',pct:1.1}}},
+    {id:'m_us3',name:'Dodd-Frank Act (2010)',active:false,desc:'Post-2008 financial reform. Volcker Rule limits proprietary trading. New capital requirements for banks. Reduces systemic risk.',impacts:{JPM:{dir:'down',pct:-5.2},GS:{dir:'down',pct:-6.8},AAPL:{dir:'down',pct:-0.8},AMZN:{dir:'down',pct:-0.6}}},
+    {id:'m_us4',name:'Big Tech Antitrust Probe (2019)',active:false,desc:'DOJ/FTC investigations into monopolistic behavior across FAANG. Creates regulatory overhang for US tech.',impacts:{AAPL:{dir:'down',pct:-4.1},GOOG:{dir:'down',pct:-5.2},AMZN:{dir:'down',pct:-3.8},MSFT:{dir:'down',pct:-2.1}}},
+    {id:'m_us5',name:'Fed Rate Hike Cycle (2015–18)',active:false,desc:'Federal Reserve raises rates 9 times. Strengthens USD, pressures EM assets and high-growth tech valuations.',impacts:{AAPL:{dir:'down',pct:-2.8},GOOG:{dir:'down',pct:-3.1},BABA:{dir:'down',pct:-5.2},TM:{dir:'down',pct:-1.4}}},
+  ]},
+  cn:{name:'China',flag:'🇨🇳',regs:[
+    {id:'m_cn1',name:'China WTO Entry (2001)',active:false,desc:'China joins the World Trade Organization. Triggers a decade of export-led growth and manufacturing dominance.',impacts:{AMZN:{dir:'up',pct:3.1},TM:{dir:'down',pct:-2.4},XOM:{dir:'up',pct:4.2},GS:{dir:'up',pct:2.1}}},
+    {id:'m_cn2',name:'Tech Crackdown (2018–19)',active:false,desc:'Beijing\'s regulatory pressure on internet platforms. Data privacy laws, fintech restrictions, and platform scrutiny.',impacts:{BABA:{dir:'down',pct:-18.4},AAPL:{dir:'down',pct:-3.2},MSFT:{dir:'down',pct:-1.1},GOOG:{dir:'down',pct:-1.4}}},
+    {id:'m_cn3',name:'Belt & Road Initiative (2013)',active:false,desc:'$1 trillion global infrastructure programme. Boosts demand for commodities, construction, and global logistics.',impacts:{XOM:{dir:'up',pct:3.1},RDSA:{dir:'up',pct:2.4},TM:{dir:'up',pct:1.8},GS:{dir:'up',pct:1.2}}},
+  ]},
+  eu:{name:'European Union',flag:'🇪🇺',regs:[
+    {id:'m_eu1',name:'GDPR (2018)',active:false,desc:'Sweeping EU data privacy rules. Fines up to 4% of global revenue. Heavy compliance costs for US tech firms operating in Europe.',impacts:{AAPL:{dir:'down',pct:-1.8},GOOG:{dir:'down',pct:-3.4},AMZN:{dir:'down',pct:-2.1},MSFT:{dir:'down',pct:-1.4}}},
+    {id:'m_eu2',name:'EU Carbon Border Tax',active:false,desc:'Carbon border adjustment mechanism raises costs for non-EU imports with high carbon footprints.',impacts:{XOM:{dir:'down',pct:-3.8},RDSA:{dir:'down',pct:-2.1},TM:{dir:'down',pct:-2.6}}},
+    {id:'m_eu3',name:'EU Single Market (1993)',active:false,desc:'Full implementation of EU single market — free movement of goods, services, capital, and people across 12 nations.',impacts:{RDSA:{dir:'up',pct:5.2},TM:{dir:'up',pct:3.4},GS:{dir:'up',pct:2.1},MSFT:{dir:'up',pct:1.8}}},
+  ]},
+  jp:{name:'Japan',flag:'🇯🇵',regs:[
+    {id:'m_jp1',name:'Abenomics QE (2013)',active:false,desc:'Bank of Japan expands money supply aggressively. Weakens yen, dramatically boosts Japanese exporters.',impacts:{TM:{dir:'up',pct:8.2},RDSA:{dir:'up',pct:1.1},GS:{dir:'up',pct:1.4},JPM:{dir:'up',pct:1.2}}},
+    {id:'m_jp2',name:'Japan Asset Bubble Collapse (1991)',active:false,desc:'Nikkei crashes 60%. Japanese real estate collapses. "Lost Decade" begins — 10 years of deflation and stagnation.',impacts:{JPM:{dir:'down',pct:-6.2},GS:{dir:'down',pct:-5.8},TM:{dir:'down',pct:-8.4},RDSA:{dir:'down',pct:-2.1}}},
+  ]},
+  uk:{name:'United Kingdom',flag:'🇬🇧',regs:[
+    {id:'m_uk1',name:'Big Bang Deregulation (1986)',active:false,desc:'Thatcher deregulates the London Stock Exchange. Ends fixed commissions, allows foreign ownership of brokerages. London becomes a global finance hub.',impacts:{GS:{dir:'up',pct:9.2},JPM:{dir:'up',pct:7.4},RDSA:{dir:'up',pct:3.1},MSFT:{dir:'up',pct:1.2}}},
+    {id:'m_uk2',name:'Post-Brexit Trade Rules (2020)',active:false,desc:'UK diverges from EU single market. Adds friction for UK-EU trade, raises compliance costs for multinationals.',impacts:{RDSA:{dir:'down',pct:-2.9},GS:{dir:'down',pct:-1.7},JPM:{dir:'down',pct:-1.2},AMZN:{dir:'down',pct:-1.8}}},
+  ]},
+};
+
+// ═══════════════════════════════════════════════════
+//  PRICE GENERATION
+// ═══════════════════════════════════════════════════
+function genPrices(s, n, crashEvents) {
+  const p=[]; let v=s.base;
+  let seed=s.sym.charCodeAt(0)*17+(s.sym.charCodeAt(1)||7)*31;
+  function rnd(){seed=(seed*1664525+1013904223)&0xffffffff;return(seed>>>0)/0xffffffff;}
+  const trend=0.0006+rnd()*0.0012;
+  for(let i=0;i<n;i++){
+    let shock=0;
+    if(crashEvents){
+      crashEvents.forEach(e=>{
+        if(i>=e.start&&i<e.start+e.duration){
+          shock+=e.magnitude*(1-((i-e.start)/e.duration))*0.5;
+        }
+      });
+    }
+    v=v*(1+trend+(rnd()-0.48)*s.vol*2+shock);
+    p.push(Math.max(0.01,parseFloat(v.toFixed(4))));
+  }
+  return p;
+}
+
+// Historic: 1920–1979 = 60 years = 3120 weeks
+const HIST_WEEKS=3120;
+// Crash events for historic (week indices)
+const HIST_CRASHES={
+  STEEL:[{start:468,duration:200,magnitude:-0.012},{start:1040,duration:80,magnitude:0.018},{start:2184,duration:60,magnitude:-0.008}],
+  OIL:[{start:468,duration:200,magnitude:-0.008},{start:2756,duration:100,magnitude:0.035}],
+  BANK:[{start:450,duration:260,magnitude:-0.018},{start:468,duration:80,magnitude:-0.025}],
+  AUTO:[{start:468,duration:200,magnitude:-0.016},{start:2756,duration:120,magnitude:-0.025}],
+  RAIL:[{start:468,duration:200,magnitude:-0.012},{start:1300,duration:100,magnitude:-0.008}],
+  DEF:[{start:1040,duration:260,magnitude:0.022},{start:1560,duration:800,magnitude:0.010}],
+  AGRI:[{start:520,duration:312,magnitude:-0.014}],
+  UTIL:[{start:468,duration:180,magnitude:-0.010},{start:1820,duration:200,magnitude:0.014}],
+  CHEM:[{start:468,duration:200,magnitude:-0.010},{start:1040,duration:200,magnitude:0.016}],
+  MEDIA:[{start:468,duration:200,magnitude:-0.012},{start:1560,duration:400,magnitude:0.014}],
+};
+const HIST_PRICES={};
+HISTORIC_STOCKS.forEach(s=>{HIST_PRICES[s.sym]=genPrices(s,HIST_WEEKS,HIST_CRASHES[s.sym]);});
+
+// Modern: 1980–2019 = 40 years = 2080 weeks
+const MOD_WEEKS=2080;
+const MOD_CRASHES={
+  GS:[{start:364,duration:20,magnitude:-0.025}],
+  JPM:[{start:364,duration:20,magnitude:-0.025},{start:1456,duration:80,magnitude:-0.020}],
+  AAPL:[{start:988,duration:120,magnitude:-0.030},{start:1456,duration:60,magnitude:-0.018}],
+  AMZN:[{start:988,duration:160,magnitude:-0.038}],
+  GOOG:[{start:1456,duration:60,magnitude:-0.022}],
+  BABA:[{start:1872,duration:40,magnitude:-0.015}],
+  XOM:[{start:468,duration:80,magnitude:-0.025},{start:1456,duration:80,magnitude:-0.018}],
+  TM:[{start:1508,duration:80,magnitude:-0.022}],
+};
+const MOD_PRICES={};
+MODERN_STOCKS.forEach(s=>{MOD_PRICES[s.sym]=genPrices(s,MOD_WEEKS,MOD_CRASHES[s.sym]);});
+
+// ═══════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════
+let simMode='modern'; // 'historic' or 'modern'
+let cash=100000, holdings={}, transactions=[], portHistory=[100000];
+let selSym='', tradeMode='buy', tf='1Y';
+let portChartInst=null;
+
+function currentStocks(){return simMode==='historic'?HISTORIC_STOCKS:MODERN_STOCKS;}
+function currentPrices(){return simMode==='historic'?HIST_PRICES:MOD_PRICES;}
+function currentWeeks(){return simMode==='historic'?HIST_WEEKS:MOD_WEEKS;}
+function currentRegs(){return simMode==='historic'?HIST_REGS:MOD_REGS;}
+
+function basePrice(sym){const p=currentPrices()[sym];return p[p.length-1];}
+function effectivePrice(sym){
+  let mult=1;
+  Object.values(currentRegs()).forEach(c=>{
+    c.regs.forEach(r=>{if(r.active&&r.impacts&&r.impacts[sym])mult+=r.impacts[sym].pct/100;});
+  });
+  return Math.max(0.01,basePrice(sym)*mult);
+}
+function prevPrice(sym){const p=currentPrices()[sym];return p[p.length-2];}
+function pctChg(sym){const c=effectivePrice(sym),pp=prevPrice(sym);return(c-pp)/pp*100;}
+function portValue(){
+  let v=cash;
+  Object.entries(holdings).forEach(([sym,h])=>{if(h.shares>0)v+=h.shares*effectivePrice(sym);});
+  return v;
+}
+
+// Formatting
+function fmt(n){return n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fmtK(n){if(Math.abs(n)>=1e9)return(n/1e9).toFixed(2)+'B';if(Math.abs(n)>=1e6)return(n/1e6).toFixed(2)+'M';if(Math.abs(n)>=1e3)return(n/1e3).toFixed(1)+'K';return fmt(n);}
+function sgn(n){return n>0?'+':'';}
+function cls(n){return n>0?'pos':n<0?'neg':'neu';}
+function toast(title,msg,type){
+  const t=document.getElementById('toast');
+  document.getElementById('toastT').textContent=title;
+  document.getElementById('toastM').textContent=msg;
+  t.className='toast show'+(type?' '+type:'');
+  setTimeout(()=>{t.className='toast';},3000);
+}
+
+// ═══════════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════════
+function launchSim(mode){
+  simMode=mode;
+  cash=100000; holdings={}; transactions=[]; portHistory=[100000];
+  selSym=currentStocks()[0].sym;
+  tradeMode='buy'; tf='1Y';
+  // Reset all reg toggles
+  Object.values(HIST_REGS).forEach(c=>c.regs.forEach(r=>r.active=false));
+  Object.values(MOD_REGS).forEach(c=>c.regs.forEach(r=>r.active=false));
+  document.getElementById('page-landing').classList.remove('active');
+  document.getElementById('page-sim').classList.add('active');
+  // Mode badge
+  const badge=document.getElementById('simModeBadge');
+  if(mode==='historic'){
+    badge.textContent='HISTORIC 1920–1979';badge.className='sim-mode-badge hist';
+    document.getElementById('page-sim').classList.add('historic-theme');
+  } else {
+    badge.textContent='MODERN 1980–2019';badge.className='sim-mode-badge mod';
+    document.getElementById('page-sim').classList.remove('historic-theme');
+  }
+  document.getElementById('eraRangeBadge').textContent=mode==='historic'?'1920–1979':'1980–2019';
+  // Reset nav
+  document.querySelectorAll('.snb').forEach((b,i)=>{b.classList.toggle('active',i===0);});
+  document.querySelectorAll('.sim-view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('simview-trade').classList.add('active');
+  renderAll();
+}
+function goLanding(){
+  document.getElementById('page-sim').classList.remove('active');
+  document.getElementById('page-landing').classList.add('active');
+}
+function setSimTab(v,btn){
+  document.querySelectorAll('.sim-view').forEach(el=>el.classList.remove('active'));
+  document.getElementById('simview-'+v).classList.add('active');
+  document.querySelectorAll('.snb').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(v==='portfolio')renderPortfolio();
+  if(v==='leaderboard')renderLeaderboard();
+}
+
+// ═══════════════════════════════════════════════════
+//  TICKER
+// ═══════════════════════════════════════════════════
+function renderTicker(){
+  const items=currentStocks().map(s=>{
+    const ch=pctChg(s.sym),p=effectivePrice(s.sym);
+    const sign=ch>0?'+':'';
+    return `<span><span class="t-sym">${s.sym}</span> $${fmt(p)} <span class="${cls(ch)}">${sign}${ch.toFixed(2)}%</span></span>`;
+  });
+  document.getElementById('tickerInner').innerHTML=[...items,...items].join('');
+}
+
+// ═══════════════════════════════════════════════════
+//  STOCK LIST
+// ═══════════════════════════════════════════════════
+function renderStockList(){
+  const el=document.getElementById('stockListEl');
+  el.innerHTML='';
+  // Group by era/sector for historic, show all for modern
+  const stocks=currentStocks();
+  const grouped={};
+  stocks.forEach(s=>{
+    const g=simMode==='historic'?s.era:s.exch;
+    if(!grouped[g])grouped[g]=[];
+    grouped[g].push(s);
+  });
+  Object.entries(grouped).forEach(([grp,list])=>{
+    const div=document.createElement('div');
+    div.innerHTML=`<div class="sec-div">${grp}</div>`;
+    list.forEach(s=>{
+      const p=effectivePrice(s.sym),ch=pctChg(s.sym);
+      const row=document.createElement('div');
+      row.className='stk-row'+(s.sym===selSym?' sel':'');
+      row.innerHTML=`<div class="stk-ico" style="background:${s.bg};color:${s.col}">${s.sym.substring(0,2)}</div>
+        <div class="stk-inf"><div class="stk-sym">${s.sym}</div><div class="stk-exch">${simMode==='historic'?s.era:s.exch}</div></div>
+        <div class="stk-prc-col"><div class="stk-prc">$${fmt(p)}</div><div class="stk-chg ${cls(ch)}">${sgn(ch)}${ch.toFixed(2)}%</div></div>`;
+      row.onclick=()=>selectStock(s.sym);
+      div.appendChild(row);
+    });
+    el.appendChild(div);
+  });
+}
+
+// ═══════════════════════════════════════════════════
+//  CHART
+// ═══════════════════════════════════════════════════
+function getSlice(sym){
+  const all=currentPrices()[sym];
+  const total=currentWeeks();
+  const yearsPerWeek=simMode==='historic'?60:40;
+  const map={'1Y':52,'5Y':260,'10Y':520,'20Y':1040,'All':total};
+  const n=map[tf]||260;
+  return all.slice(Math.max(0,all.length-n));
+}
+function renderChart(sym){
+  const raw=getSlice(sym);
+  const regMult=getRegMult(sym);
+  const prices=raw.map((p,i)=>i===raw.length-1?p*regMult:p);
+  const svg=document.getElementById('priceChart');
+  const W=600,H=140,pt={t:8,b:18,l:6,r:6};
+  const iW=W-pt.l-pt.r,iH=H-pt.t-pt.b;
+  const min=Math.min(...prices)*0.994,max=Math.max(...prices)*1.006;
+  const xs=prices.map((_,i)=>pt.l+(i/(prices.length-1))*iW);
+  const ys=prices.map(p=>pt.t+iH-((p-min)/(max-min))*iH);
+  const up=prices[prices.length-1]>=prices[0];
+  const col=simMode==='historic'?(up?'#c9a84c':'#ef4444'):(up?'#10b981':'#ef4444');
+  const pts=xs.map((x,i)=>`${x.toFixed(1)},${ys[i].toFixed(1)}`).join(' ');
+  const bot=pt.t+iH;
+  const id='g'+sym+Date.now();
+  svg.innerHTML=`<defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${col}" stop-opacity=".18"/><stop offset="100%" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+  <polygon points="${pt.l},${bot} ${pts} ${pt.l+iW},${bot}" fill="url(#${id})"/>
+  <polyline points="${pts}" fill="none" stroke="${col}" stroke-width="1.5"/>
+  <text x="${pt.l}" y="${H-3}" fill="#4a5568" font-size="9" font-family="IBM Plex Mono">$${fmtK(min)}</text>
+  <text x="${W-pt.r}" y="${H-3}" fill="#4a5568" font-size="9" font-family="IBM Plex Mono" text-anchor="end">$${fmtK(max)}</text>`;
+}
+function getRegMult(sym){
+  let m=1;
+  Object.values(currentRegs()).forEach(c=>c.regs.forEach(r=>{
+    if(r.active&&r.impacts&&r.impacts[sym])m+=r.impacts[sym].pct/100;
+  }));
+  return m;
+}
+
+// Timeframe buttons
+function renderTFBtns(){
+  const opts=simMode==='historic'?['1Y','5Y','10Y','20Y','All']:['1Y','5Y','10Y','20Y','All'];
+  const cl=simMode==='historic'?'hist-active':'active';
+  document.getElementById('tfBtns').innerHTML=opts.map(t=>`<button class="tf-btn${t===tf?' '+cl:''}" onclick="setTF('${t}',this)">${t}</button>`).join('');
+}
+function setTF(t,btn){
+  tf=t;
+  const cl=simMode==='historic'?'hist-active':'active';
+  document.querySelectorAll('.tf-btn').forEach(b=>b.classList.remove('active','hist-active'));
+  btn.classList.add(cl);
+  renderChart(selSym);
+}
+
+// ═══════════════════════════════════════════════════
+//  STOCK HEADER + ERA BANNER
+// ═══════════════════════════════════════════════════
+function renderStockHeader(sym){
+  const s=currentStocks().find(x=>x.sym===sym);
+  const p=effectivePrice(sym),pp=prevPrice(sym);
+  const chA=p-pp,chP=(p-pp)/pp*100;
+  const hist=currentPrices()[sym];
+  const yr52lo=Math.min(...hist.slice(-52)),yr52hi=Math.max(...hist.slice(-52));
+  document.getElementById('cSym').textContent=sym;
+  document.getElementById('cName').textContent=s.name;
+  document.getElementById('cMeta').textContent=simMode==='historic'?`${s.era} · Historic Index`:`${s.exch} · ${s.sector}`;
+  document.getElementById('cPrice').textContent='$'+fmt(p);
+  const ce=document.getElementById('cChg');
+  ce.textContent=`${sgn(chA)}$${fmt(Math.abs(chA))} (${sgn(chP)}${chP.toFixed(2)}%)`;
+  ce.className='price-chg '+cls(chP);
+  const vol=Math.floor(1e5+Math.random()*9e6);
+  document.getElementById('statsGrid').innerHTML=[
+    sc('52W HIGH','$'+fmt(yr52hi)),
+    sc('52W LOW','$'+fmt(yr52lo)),
+    sc('AVG VOL',fmtK(vol)),
+    sc('MKT CAP','$'+fmtK(p*(1e8+Math.random()*9e9)))
+  ].join('');
+  // Era banner
+  const banner=document.getElementById('eraBanner');
+  banner.className='era-banner'+(simMode==='modern'?' mod':'');
+  document.getElementById('eraBannerTitle').textContent=s.context.title;
+  document.getElementById('eraBannerText').textContent=s.context.text;
+}
+function sc(l,v){return`<div class="stat-card"><div class="stat-lbl">${l}</div><div class="stat-val">${v}</div></div>`;}
+
+// ═══════════════════════════════════════════════════
+//  REGULATION IMPACT
+// ═══════════════════════════════════════════════════
+function renderRegImpact(sym){
+  const active=[];
+  Object.values(currentRegs()).forEach(c=>{
+    c.regs.forEach(r=>{if(r.active&&r.impacts&&r.impacts[sym])active.push({r,imp:r.impacts[sym],c});});
+  });
+  const chip=document.getElementById('riChip');
+  const eff=document.getElementById('riEffects');
+  if(!active.length){
+    chip.textContent='No active regulations';chip.className='ri-chip none';
+    eff.innerHTML='<span style="font-size:12px;color:var(--text3)">Toggle regulations in the right panel.</span>';
+    return;
+  }
+  chip.textContent=`${active.length} reg${active.length>1?'s':''} active`;chip.className='ri-chip active';
+  eff.innerHTML=active.map(({r,imp,c})=>`<div class="ri-pill ${imp.dir}">${c.flag} ${r.name}: <strong>${sgn(imp.pct)}${imp.pct.toFixed(1)}%</strong></div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════
+//  TRADE
+// ═══════════════════════════════════════════════════
+function updateSum(){
+  const qty=parseInt(document.getElementById('qtyInp').value)||0;
+  const p=effectivePrice(selSym);
+  const sub=qty*p,fee=sub*0.001,grand=sub+(tradeMode==='buy'?fee:-fee);
+  const owned=(holdings[selSym]||{shares:0}).shares;
+  document.getElementById('tradeSummary').innerHTML=`
+    <div class="sum-row"><span>Price/share</span><span>$${fmt(p)}</span></div>
+    <div class="sum-row"><span>Quantity</span><span>${qty.toLocaleString()}</span></div>
+    <div class="sum-row"><span>Subtotal</span><span>$${fmt(sub)}</span></div>
+    <div class="sum-row"><span>Commission (0.1%)</span><span>$${fmt(fee)}</span></div>
+    <div class="sum-row total"><span>Total</span><span>$${fmt(grand)}</span></div>`;
+  const ok=tradeMode==='buy'?grand<=cash:qty<=owned;
+  const btn=document.getElementById('execBtn');
+  btn.disabled=qty<=0||!ok;
+  btn.textContent=`EXECUTE ${tradeMode.toUpperCase()}`;
+  btn.className='exec-btn '+tradeMode;
+}
+function setQty(n){document.getElementById('qtyInp').value=n;updateSum();}
+function setTradeMode(m,btn){
+  tradeMode=m;
+  document.querySelectorAll('.trade-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  updateSum();
+}
+function executeTrade(){
+  const qty=parseInt(document.getElementById('qtyInp').value)||0;
+  const p=effectivePrice(selSym);
+  const sub=qty*p,fee=sub*0.001;
+  const startYear=simMode==='historic'?1920:1980;
+  const d=new Date(startYear+Math.floor(Math.random()*(simMode==='historic'?59:39)),Math.floor(Math.random()*12),1+Math.floor(Math.random()*27));
+  const dateStr=d.toISOString().slice(0,10);
+  if(tradeMode==='buy'){
+    const cost=sub+fee;
+    if(cost>cash){toast('Insufficient Funds',`Need $${fmt(cost)}, have $${fmt(cash)}`,'err');return;}
+    cash-=cost;
+    if(!holdings[selSym])holdings[selSym]={shares:0,avgCost:0};
+    const h=holdings[selSym];
+    h.avgCost=(h.avgCost*h.shares+p*qty)/(h.shares+qty);
+    h.shares+=qty;
+    transactions.unshift({sym:selSym,type:'BUY',qty,price:p,total:cost,date:dateStr});
+    toast(`Bought ${qty} ${selSym}`,`$${fmt(cost)} deducted`);
+  } else {
+    const h=holdings[selSym];
+    if(!h||h.shares<qty){toast('Insufficient Shares',`Own ${h?h.shares:0}`,'err');return;}
+    const proceeds=sub-fee;
+    cash+=proceeds;
+    h.shares-=qty;
+    if(!h.shares)delete holdings[selSym];
+    transactions.unshift({sym:selSym,type:'SELL',qty,price:p,total:proceeds,date:dateStr});
+    toast(`Sold ${qty} ${selSym}`,`$${fmt(proceeds)} received`);
+  }
+  portHistory.push(portValue());
+  renderAll();
+}
+
+// ═══════════════════════════════════════════════════
+//  HOLDINGS
+// ═══════════════════════════════════════════════════
+function renderHoldings(){
+  const el=document.getElementById('holdingsList');
+  const entries=Object.entries(holdings).filter(([,h])=>h.shares>0);
+  if(!entries.length){el.innerHTML='<div class="empty-state">No open positions</div>';return;}
+  el.innerHTML=entries.map(([sym,h])=>{
+    const p=effectivePrice(sym),val=h.shares*p,pnl=val-h.shares*h.avgCost,pnlP=pnl/(h.shares*h.avgCost)*100;
+    return`<div class="holding-row"><div class="h-sym">${sym}</div><div class="h-inf"><div class="h-shares">${h.shares.toLocaleString()} shares</div><div class="h-cost">avg $${fmt(h.avgCost)}</div></div><div class="h-right"><div class="h-val">$${fmtK(val)}</div><div class="h-pnl ${cls(pnl)}">${sgn(pnlP)}${pnlP.toFixed(1)}%</div></div></div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════
+//  REGULATIONS PANEL
+// ═══════════════════════════════════════════════════
+function renderRegPanel(){
+  let count=0;
+  Object.values(currentRegs()).forEach(c=>c.regs.forEach(r=>{if(r.active)count++;}));
+  document.getElementById('activeRegCount').textContent=`${count} active`;
+  const el=document.getElementById('regPanel');
+  el.innerHTML=Object.entries(currentRegs()).map(([key,c])=>{
+    const actN=c.regs.filter(r=>r.active).length;
+    const regsHtml=c.regs.map(r=>{
+      const impHtml=r.impacts?Object.entries(r.impacts).map(([sym,imp])=>`<div class="imp-row"><span class="imp-sym">${sym}</span><span class="imp-val ${imp.dir}">${sgn(imp.pct)}${imp.pct.toFixed(1)}%</span></div>`).join(''):'';
+      return`<div class="reg-item">
+        <div class="reg-item-top"><span class="reg-name">${r.name}</span>
+          <label class="reg-toggle"><input type="checkbox" ${r.active?'checked':''} onchange="toggleReg('${key}','${r.id}',this.checked)"><div class="tog-track"></div><div class="tog-thumb"></div></label>
+        </div>
+        <div class="reg-desc">${r.desc}</div>
+        <div class="reg-impacts">${impHtml}</div>
+      </div>`;
+    }).join('');
+    return`<div class="c-section">
+      <div class="c-hdr" onclick="toggleCountry('${key}')">
+        <span class="c-flag">${c.flag}</span><span class="c-name">${c.name}</span>
+        ${actN?`<span class="c-act-count">${actN} active</span>`:''}
+        <span class="c-arr" id="carr-${key}">›</span>
+      </div>
+      <div class="reg-list" id="clist-${key}">${regsHtml}</div>
+    </div>`;
+  }).join('');
+}
+function toggleCountry(key){
+  const l=document.getElementById('clist-'+key);
+  const a=document.getElementById('carr-'+key);
+  const o=l.classList.toggle('open');
+  a.classList.toggle('open',o);
+}
+function toggleReg(cKey,rId,val){
+  const c=currentRegs()[cKey];
+  if(!c)return;
+  const r=c.regs.find(x=>x.id===rId);
+  if(!r)return;
+  r.active=val;
+  const n=r.impacts?Object.keys(r.impacts).length:0;
+  toast(val?'Regulation Activated':'Regulation Deactivated',`${r.name} — ${n} stock${n!==1?'s':''} affected`,val?'warn':'');
+  renderAll();
+}
+
+// ═══════════════════════════════════════════════════
+//  PORTFOLIO
+// ═══════════════════════════════════════════════════
+function renderPortfolio(){
+  const total=portValue(),gain=total-100000,inv=total-cash;
+  const unreal=Object.entries(holdings).reduce((a,[sym,h])=>h.shares>0?a+h.shares*(effectivePrice(sym)-h.avgCost):a,0);
+  function psc(l,v,s,sc){return`<div class="psc"><div class="psc-l">${l}</div><div class="psc-v">${v}</div>${s?`<div class="psc-s ${sc||''}">${s}</div>`:''}</div>`;}
+  document.getElementById('portStatsRow').innerHTML=
+    psc('Total Value','$'+fmt(total),sgn(gain)+'$'+fmt(Math.abs(gain)),cls(gain))+
+    psc('Cash','$'+fmt(cash))+psc('Invested','$'+fmt(inv))+
+    psc('Unrealized P&L',(unreal>=0?'+':'')+fmt(unreal),(unreal/100000*100).toFixed(2)+'%',cls(unreal));
+  const hist=portHistory.length>1?portHistory:[100000,total];
+  const ctx=document.getElementById('portChart');
+  if(portChartInst)portChartInst.destroy();
+  const lc=simMode==='historic'?'#c9a84c':'#3b82f6';
+  portChartInst=new Chart(ctx,{type:'line',data:{labels:hist.map((_,i)=>i===0?'Start':`T${i}`),datasets:[{data:hist,borderColor:lc,backgroundColor:lc.replace(')',', 0.07)').replace('rgb','rgba').replace('#c9a84c','rgba(201,168,76,0.07)').replace('#3b82f6','rgba(59,130,246,0.07)'),fill:true,tension:0.3,pointRadius:1.5,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#4a5568',font:{size:10}},grid:{color:'#1e2433'}},y:{ticks:{color:'#4a5568',font:{size:10},callback:v=>'$'+fmtK(v)},grid:{color:'#1e2433'}}}}});
+  const entries=Object.entries(holdings).filter(([,h])=>h.shares>0);
+  const posEl=document.getElementById('posTable');
+  if(!entries.length){posEl.innerHTML='<div class="empty-state">No open positions. Start trading to build your portfolio.</div>';}
+  else posEl.innerHTML=`<table class="ptable"><thead><tr><th>Symbol</th><th>Shares</th><th>Avg Cost</th><th>Price</th><th>Value</th><th>P&L</th></tr></thead><tbody>${entries.map(([sym,h])=>{const p=effectivePrice(sym),val=h.shares*p,pnl=val-h.shares*h.avgCost;return`<tr><td><strong>${sym}</strong></td><td>${h.shares.toLocaleString()}</td><td>$${fmt(h.avgCost)}</td><td>$${fmt(p)}</td><td>$${fmt(val)}</td><td class="${cls(pnl)}">${sgn(pnl)}$${fmt(Math.abs(pnl))}</td></tr>`;}).join('')}</tbody></table>`;
+  const txEl=document.getElementById('txTable');
+  if(!transactions.length){txEl.innerHTML='<div class="empty-state">No transactions yet.</div>';}
+  else txEl.innerHTML=`<table class="ptable"><thead><tr><th>Date</th><th>Type</th><th>Symbol</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead><tbody>${transactions.slice(0,30).map(t=>`<tr><td style="color:var(--text2)">${t.date}</td><td><span style="font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;background:${t.type==='BUY'?'var(--green-dim)':'var(--red-dim)'};color:${t.type==='BUY'?'var(--green-lt)':'var(--red-lt)'}">${t.type}</span></td><td><strong>${t.sym}</strong></td><td>${t.qty.toLocaleString()}</td><td>$${fmt(t.price)}</td><td>$${fmt(t.total)}</td></tr>`).join('')}</tbody></table>`;
+}
+
+// ═══════════════════════════════════════════════════
+//  LEADERBOARD
+// ═══════════════════════════════════════════════════
+const HIST_LB=[{n:'Margaret Pearce',v:148200},{n:'Heinrich Braun',v:141700},{n:'Kenji Watanabe',v:132400},{n:'Clara Dubois',v:124100},{n:'Stanislaw Kowalski',v:118300},{n:'Nora Fitzgerald',v:112800},{n:'Emilio Rossi',v:107400},{n:'Vera Novak',v:99200},{n:'Arthur Blackwood',v:96800}];
+const MOD_LB=[{n:'Chen Wei',v:152300},{n:'Sofia Reyes',v:141800},{n:'Arjun Patel',v:133200},{n:'Emma Larsson',v:126400},{n:"James O'Brien",v:119700},{n:'Yuki Tanaka',v:113200},{n:'Fatima Hassan',v:108100},{n:'Lucas Becker',v:101400},{n:'Priya Sharma',v:97900}];
+function renderLeaderboard(){
+  const others=simMode==='historic'?HIST_LB:MOD_LB;
+  const my=portValue();
+  const all=[...others.map(t=>({name:t.n,val:t.v,me:false})),{name:'You',val:my,me:true}];
+  all.sort((a,b)=>b.val-a.val);
+  const top=all[0].val;
+  const medal=['#c9a84c','#a8a9ad','#cd7f32'];
+  document.getElementById('lbTitle').textContent=simMode==='historic'?'Historic Era Leaderboard (1920–1979)':'Modern Era Leaderboard (1980–2019)';
+  document.getElementById('lbList').innerHTML=all.map((t,i)=>`<div class="lb-row">
+    <div class="lb-rank" style="color:${i<3?medal[i]:'var(--text3)'}">${i+1}</div>
+    <div class="lb-av" style="background:${t.me?'var(--accent-dim)':'var(--surface2)'};color:${t.me?'var(--accent-lt)':'var(--text2)'}">${t.name.substring(0,2).toUpperCase()}</div>
+    <div class="lb-nw">
+      <div class="lb-name">${t.name}${t.me?'<span class="you-tag">YOU</span>':''}</div>
+      <div class="lb-bar-w"><div class="lb-bar-f" style="width:${(t.val/top*100).toFixed(1)}%;background:${i<3?medal[i]:'var(--accent)'}"></div></div>
+    </div>
+    <div class="lb-amt" style="color:${t.me?'var(--accent-lt)':'var(--text)'}">$${fmt(t.val)}</div>
+  </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════
+//  SELECT STOCK
+// ═══════════════════════════════════════════════════
+function selectStock(sym){
+  selSym=sym;
+  renderStockList();
+  renderStockHeader(sym);
+  renderChart(sym);
+  renderRegImpact(sym);
+  updateSum();
+}
+
+// ═══════════════════════════════════════════════════
+//  RENDER ALL
+// ═══════════════════════════════════════════════════
+function renderAll(){
+  document.getElementById('cashDisp').textContent='$'+fmt(cash);
+  renderTicker();
+  renderStockList();
+  renderHoldings();
+  renderRegPanel();
+  renderStockHeader(selSym);
+  renderChart(selSym);
+  renderRegImpact(selSym);
+  renderTFBtns();
+  updateSum();
+}
+
+// ═══════════════════════════════════════════════════
+//  TIMELINE (landing)
+// ═══════════════════════════════════════════════════
+const TL_EVENTS=[
+  {y:'1929',n:'Wall St. Crash',type:'crash'},{y:'1933',n:'New Deal',type:'reg'},{y:'1944',n:'Bretton Woods',type:'reg'},
+  {y:'1948',n:'Marshall Plan',type:'boom'},{y:'1957',n:'Space Race',type:'boom'},{y:'1971',n:'Nixon Shock',type:'crash'},
+  {y:'1973',n:'Oil Embargo',type:'crash'},{y:'1981',n:'Reagan Bull Run',type:'boom'},{y:'1987',n:'Black Monday',type:'crash'},
+  {y:'1999',n:'Glass-Steagall Repealed',type:'reg'},{y:'2000',n:'Dot-com Crash',type:'crash'},
+  {y:'2008',n:'Financial Crisis',type:'crash'},{y:'2010',n:'Dodd-Frank',type:'reg'},{y:'2018',n:'GDPR',type:'reg'},
+];
+document.getElementById('tlEvents').innerHTML=TL_EVENTS.map(e=>`<div class="tl-event"><div class="tl-dot ${e.type}"></div><div class="tl-year">${e.y}</div><div class="tl-evt-name">${e.n}</div></div>`).join('');
+</script>
+</body>
+</html>
